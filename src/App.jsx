@@ -5,32 +5,56 @@ import { Boxes, MapPin } from "lucide-react";
 export const App = () => {
   const [searchText, setSearchText] = useState("");
   const [filteredUsers, setFilteredUsers] = useState(USERS);
-  
-  useEffect(()=>{
-    if(!searchText){
+  const [filteredCity, setFilteredCity] = useState("");
+  const [filteredAge, setFilteredAge] = useState("");
+
+  useEffect(() => {
+    if (!searchText) {
       setFilteredUsers(USERS);
       return;
     }
-    const tempFilteredUsers = USERS.filter((user)=>{
-      if(user.name.toLowerCase().includes(searchText)){
+    const tempFilteredUsers = USERS.filter((user) => {
+      if (user.name.toLowerCase().includes(searchText)) {
         return true;
-      }
-      else if(user.city.toLowerCase().includes(searchText)){
+      } else if (user.city.toLowerCase().includes(searchText)) {
         return true;
-      }
-      else if(user.age.toString().includes(searchText)){
+      } else if (user.age.toString().includes(searchText)) {
         return true;
-      }else{
+      } else {
         return false;
       }
-    })
+    });
     setFilteredUsers(tempFilteredUsers);
-  }, [searchText])
+  }, [searchText]);
+
+  useEffect(() => {
+    if (!filteredCity && !filteredAge) {
+      setFilteredUsers(USERS);
+      return;
+    }
+
+    const tempFilteredUsers = USERS.filter((user) => {
+      if((filteredCity && user.city === filteredCity) && (parseInt(filteredAge) && user.age === parseInt(filteredAge))){
+        return true;
+      }
+
+      if(filteredCity && !filteredAge && user.city === filteredCity){
+        return true;
+      }
+
+      if(filteredAge && !filteredCity && user.age  === filteredAge){
+        return true;
+      }
+
+      return false;
+    });
+    setFilteredUsers(tempFilteredUsers);
+  }, [filteredCity, filteredAge]);
 
   return (
     <div>
       <h1 className="text-center font-bold text-4xl py-5">
-        Search-Sort-Filter 
+        Search-Sort-Filter
       </h1>
       <input
         type="text"
@@ -41,7 +65,50 @@ export const App = () => {
           setSearchText(e.target.value.toLowerCase());
         }}
       />
-      <h3 className="text-center my-4 text-xl">Total Users<span className="font-bold">({filteredUsers.length})</span></h3>
+      {searchText ? (
+        <h3 className="text-center my-4 text-lg">
+          {filteredUsers.length === 0
+            ? "No User Found"
+            : filteredUsers.length === 1
+            ? "Total User"
+            : "Total Users"}
+          <span className="font-bold"> ({filteredUsers.length}) </span>
+        </h3>
+      ) : null}
+
+      <div className="flex justify-evenly">
+        <div>
+          <span>Filter by City: </span>
+          <select
+            value={filteredCity}
+            onChange={(e) => {
+              setFilteredCity(e.target.value);
+            }}
+          >
+            <option value="">All</option>
+            <option value="Mumbai">Mumbai</option>
+            <option value="Pune">Pune</option>
+            <option value="Nagpur">Nagpur</option>
+            <option value="Bengaluru">Bengaluru</option>
+            <option value="Delhi">Delhi</option>
+            <option value="Agra">Agra</option>
+            <option value="Kolkata">Kolkata</option>
+            <option value="Hydrabad">Hydrabad</option>
+            <option value="Chennai">Chennai</option>
+          </select>
+        </div>
+        <div>
+          <span>Filter by Age: </span>
+          <select value={filteredAge} onChange={(e)=> {setFilteredAge(e.target.value)}}>
+            <option value="">All</option>
+            <option value="25">25</option>
+            <option value="26">26</option>
+            <option value="30">30</option>
+            <option value="35">35</option>
+          </select>
+        </div>
+      </div>
+
       <div className="flex flex-wrap justify-evenly mx-20">
         {filteredUsers.map((user, i) => {
           const { name, age, city, image } = user;
@@ -60,7 +127,7 @@ export const App = () => {
               </div>
               <div className="block my-auto">
                 <h2 className="font-bold">{name}</h2>
-                <p className="flex flex-row">
+                <div className="flex flex-row">
                   <span>
                     <Boxes className="h-5" />
                   </span>
@@ -69,7 +136,7 @@ export const App = () => {
                     <MapPin className="h-5" />
                   </span>
                   <p>{city}</p>
-                </p>
+                </div>
               </div>
             </div>
           );
