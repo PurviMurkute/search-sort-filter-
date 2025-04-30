@@ -86,25 +86,22 @@ export const App = () => {
             }}
           >
             <option value="">All</option>
-            <option value="Mumbai">Mumbai</option>
-            <option value="Pune">Pune</option>
-            <option value="Nagpur">Nagpur</option>
-            <option value="Bengaluru">Bengaluru</option>
-            <option value="Delhi">Delhi</option>
-            <option value="Agra">Agra</option>
-            <option value="Kolkata">Kolkata</option>
-            <option value="Hydrabad">Hydrabad</option>
-            <option value="Chennai">Chennai</option>
+            {
+              USERS.map((user)=>{
+                return <option value={user.city}>{user.city}</option>
+              })
+            }
           </select>
         </div>
         <div>
           <span>Filter by Age: </span>
           <select value={filteredAge} onChange={(e)=> {setFilteredAge(e.target.value)}}>
             <option value="">All</option>
-            <option value="25">25</option>
-            <option value="26">26</option>
-            <option value="30">30</option>
-            <option value="35">35</option>
+            {
+              USERS.map((user)=>{
+                return <option value={user.age}>{user.age}</option>
+              })
+            }
           </select>
         </div>
       </div>
